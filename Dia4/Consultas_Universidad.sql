@@ -67,3 +67,67 @@ FROM profesor
 left JOIN asignatura ON profesor.id = asignatura.id_profesor
 group by profesor.id, profesor.nombre, profesor.apellido1, profesor.apellido2
 ORDER BY numero_asignaturas DESC;
+
+-- Devuelve todos los datos del alumno más joven.
+select * from alumno ORDER BY fecha_nacimiento DESC LIMIT 1;
+
+-- Devuelve un listado con los profesores que no están asociados a un departamento.
+SELECT profesor.nombre AS profesor, COUNT(departamento.id) AS numero_de_departamentos
+FROM profesor
+LEFT JOIN departamento ON profesor.id_departamento = departamento.id
+WHERE departamento.id IS NULL
+GROUP BY profesor.nombre;
+
+-- Devuelve un listado con los departamentos que no tienen profesores asociados.
+SELECT departamento.nombre AS departamento, COUNT(profesor.id) AS numero_de_profesores
+FROM departamento
+LEFT JOIN profesor ON departamento.id = profesor.id_departamento
+GROUP BY departamento.nombre
+HAVING COUNT(profesor.id) < 1;
+
+-- Devuelve un listado con los profesores que tienen un departamento asociado y que no imparten ninguna asignatura.
+SELECT profesor.id, profesor.nif, profesor.nombre, profesor.apellido1, profesor.apellido2, profesor.ciudad, profesor.direccion, profesor.telefono, profesor.fecha_nacimiento, profesor.sexo, id_departamento
+FROM profesor
+INNER JOIN departamento ON profesor.id_departamento  = departamento.id
+LEFT JOIN asignatura ON profesor.id = asignatura.id_profesor
+WHERE asignatura.id_profesor IS NULL;
+
+-- Devuelve un listado con las asignaturas que no tienen un profesor asignado.
+SELECT * FROM asignatura WHERE id_profesor IS NULL;
+
+-- Devuelve un listado con todos los departamentos que no han impartido asignaturas en ningún curso escolar.
+select * from departamento;
+select * from asignatura;
+select * from curso_escolar;
+select * from alumno_se_matricula_asignatura;
+
+SELECT departamento.nombre AS Departamento 
+FROM departamento;
+
+-- Devuelve un listado con el nombre de todos los departamentos que tienen profesores que imparten alguna asignatura en el Grado en Ingeniería Informática (Plan 2015)
+SELECT DISTINCT departamento.nombre AS Departamentos FROM departamento
+INNER JOIN profesor ON departamento.id = profesor.id_departamento
+INNER JOIN asignatura ON profesor.id = asignatura.id_profesor
+INNER JOIN grado ON asignatura.id_grado = grado.id
+WHERE grado.nombre = 'Grado en Ingeniería Informática (Plan 2015)';
+
+-- Devuelve un listado con los nombres de todos los profesores y los departamentos que tienen vinculados. El listado también debe mostrar aquellos profesores
+-- que no tienen ningún departamento asociado. El listado debe devolver cuatro columnas, nombre del departamento, primer apellido, segundo apellido y nombre del profesor. 
+-- El resultado estará ordenado alfabéticamente de menor a mayor por el nombre del departamento, apellidos y el nombre.
+SELECT departamento.nombre AS Departamento, profesor.apellido1 AS Primer_apellido, profesor.apellido2 AS Segundo_apellido, profesor.nombre AS Nombre
+FROM profesor 
+LEFT JOIN departamento ON profesor.id_departamento = departamento.id
+ORDER BY departamento.nombre, profesor.apellido1, profesor.apellido2, profesor.nombre ASC;
+
+-- Devuelve un listado con los profesores que no imparten ninguna asignatura.
+SELECT profesor.nombre FROM profesor
+LEFT JOIN asignatura ON profesor.id = asignatura.id_profesor
+WHERE asignatura.id_profesor IS NULL;
+
+-- Devuelve un listado con todos los departamentos que tienen alguna asignatura que no se haya impartido en ningún curso escolar. 
+-- El resultado debe mostrar el nombre del departamento y el nombre de la asignatura que no se haya impartido nunca.
+SELECT departamento.nombre AS Departamento, asignatura.nombre AS Asignatura
+FROM departamento;
+
+select * from asignatura;
+select * from curso_escolar;
