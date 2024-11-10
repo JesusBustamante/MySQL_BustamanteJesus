@@ -96,13 +96,13 @@ WHERE asignatura.id_profesor IS NULL;
 SELECT * FROM asignatura WHERE id_profesor IS NULL;
 
 -- Devuelve un listado con todos los departamentos que no han impartido asignaturas en ningún curso escolar.
-select * from departamento;
-select * from asignatura;
-select * from curso_escolar;
-select * from alumno_se_matricula_asignatura;
-
-SELECT departamento.nombre AS Departamento 
-FROM departamento;
+SELECT departamento.id, departamento.nombre AS departamento
+FROM departamento
+LEFT JOIN profesor ON departamento.id = profesor.id_departamento
+LEFT JOIN asignatura ON profesor.id = asignatura.id_profesor
+LEFT JOIN alumno_se_matricula_asignatura ON asignatura.id = alumno_se_matricula_asignatura.id_asignatura
+WHERE alumno_se_matricula_asignatura.id_asignatura IS NULL
+GROUP BY departamento.id, departamento.nombre;
 
 -- Devuelve un listado con el nombre de todos los departamentos que tienen profesores que imparten alguna asignatura en el Grado en Ingeniería Informática (Plan 2015)
 SELECT DISTINCT departamento.nombre AS Departamentos FROM departamento
@@ -127,7 +127,8 @@ WHERE asignatura.id_profesor IS NULL;
 -- Devuelve un listado con todos los departamentos que tienen alguna asignatura que no se haya impartido en ningún curso escolar. 
 -- El resultado debe mostrar el nombre del departamento y el nombre de la asignatura que no se haya impartido nunca.
 SELECT departamento.nombre AS Departamento, asignatura.nombre AS Asignatura
-FROM departamento;
-
-select * from asignatura;
-select * from curso_escolar;
+FROM departamento
+INNER JOIN profesor ON departamento.id = profesor.id_departamento
+INNER JOIN asignatura ON profesor.id = asignatura.id_profesor
+LEFT JOIN alumno_se_matricula_asignatura ON asignatura.id = alumno_se_matricula_asignatura.id_asignatura
+WHERE alumno_se_matricula_asignatura.id_curso_escolar IS NULL;
