@@ -214,3 +214,63 @@ select distinct departamento.nombre
 from departamento
 inner join empleado on departamento.id = empleado.id_departamento
 where empleado.apellido2 is null;
+
+-- Devuelve un listado con todos los empleados junto con los datos de los departamentos donde trabajan. Este listado también debe incluir los 
+-- empleados que no tienen ningún departamento asociado.
+select *
+from empleado
+left join departamento on id_departamento = departamento.id;
+
+-- Devuelve un listado donde sólo aparezcan aquellos empleados que no tienen ningún departamento asociado.
+select empleado.id, empleado.nif, empleado.nombre, empleado.apellido1, empleado.apellido2, empleado.id_departamento
+from empleado
+left join departamento on id_departamento = departamento.id
+where empleado.id_departamento is null;
+
+-- Devuelve un listado donde sólo aparezcan aquellos departamentos que no tienen ningún empleado asociado.
+select departamento.id, departamento.nombre, departamento.presupuesto, departamento.gastos
+from departamento
+left join empleado on departamento.id = empleado.id_departamento
+where empleado.id_departamento is null;
+
+-- Devuelve un listado con todos los empleados junto con los datos de los departamentos donde trabajan. El listado debe incluir los empleados que no
+-- tienen ningún departamento asociado y los departamentos que no tienen ningún empleado asociado. Ordene el listado alfabéticamente por el nombre del departamento.
+SELECT empleado.id AS id_empleado, empleado.nif, empleado.nombre AS nombre_empleado, 
+       empleado.apellido1, empleado.apellido2, empleado.id_departamento, 
+       departamento.id AS id_departamento, departamento.nombre AS nombre_departamento, 
+       departamento.presupuesto, departamento.gastos
+FROM empleado
+LEFT JOIN departamento ON empleado.id_departamento = departamento.id
+
+UNION
+
+SELECT empleado.id AS id_empleado, empleado.nif, empleado.nombre AS nombre_empleado, 
+       empleado.apellido1, empleado.apellido2, empleado.id_departamento, 
+       departamento.id AS id_departamento, departamento.nombre AS nombre_departamento, 
+       departamento.presupuesto, departamento.gastos
+FROM departamento
+RIGHT JOIN empleado ON departamento.id = empleado.id_departamento
+
+ORDER BY nombre_departamento asc;
+
+-- Devuelve un listado con los empleados que no tienen ningún departamento asociado y los departamentos que no tienen ningún empleado asociado.
+-- Ordene el listado alfabéticamente por el nombre del departamento.
+SELECT empleado.id AS id_empleado, empleado.nif, empleado.nombre AS nombre_empleado, 
+       empleado.apellido1, empleado.apellido2, empleado.id_departamento, 
+       departamento.id AS id_departamento, departamento.nombre AS nombre_departamento, 
+       departamento.presupuesto, departamento.gastos
+FROM empleado
+LEFT JOIN departamento ON empleado.id_departamento = departamento.id
+where departamento.id is null
+
+UNION
+
+select empleado.id AS id_empleado, empleado.nif, empleado.nombre AS nombre_empleado, 
+       empleado.apellido1, empleado.apellido2, empleado.id_departamento, 
+       departamento.id AS id_departamento, departamento.nombre AS nombre_departamento, 
+       departamento.presupuesto, departamento.gastos
+from departamento
+left join empleado on departamento.id = empleado.id_departamento
+where empleado.id_departamento is null
+
+ORDER BY nombre_departamento asc;
