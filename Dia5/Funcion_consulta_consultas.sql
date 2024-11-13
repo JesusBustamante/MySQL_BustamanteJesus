@@ -249,7 +249,7 @@ SELECT empleado.id AS id_empleado, empleado.nif, empleado.nombre AS nombre_emple
        departamento.id AS id_departamento, departamento.nombre AS nombre_departamento, 
        departamento.presupuesto, departamento.gastos
 FROM departamento
-RIGHT JOIN empleado ON departamento.id = empleado.id_departamento
+LEFT JOIN empleado ON departamento.id = empleado.id_departamento
 
 ORDER BY nombre_departamento asc;
 
