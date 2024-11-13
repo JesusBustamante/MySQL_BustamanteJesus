@@ -274,3 +274,67 @@ left join empleado on departamento.id = empleado.id_departamento
 where empleado.id_departamento is null
 
 ORDER BY nombre_departamento asc;
+
+-- Calcula la suma del presupuesto de todos los departamentos.
+select sum(presupuesto) as Suma_presupuesto from departamento;
+
+-- Calcula la media del presupuesto de todos los departamentos.
+select AVG(presupuesto) as Media_presupuesto
+from departamento;
+
+-- Calcula el valor mínimo del presupuesto de todos los departamentos.
+select MIN(presupuesto) as minimo_presupuesto
+from departamento;
+
+-- Calcula el nombre del departamento y el presupuesto que tiene asignado, del departamento con menor presupuesto.
+select nombre, presupuesto
+from departamento
+order by presupuesto asc
+limit 1;
+
+-- Calcula el valor máximo del presupuesto de todos los departamentos.
+select MAX(presupuesto) as minimo_presupuesto
+from departamento;
+
+-- Calcula el nombre del departamento y el presupuesto que tiene asignado, del departamento con mayor presupuesto.
+select nombre, presupuesto
+from departamento
+order by presupuesto desc
+limit 1;
+
+-- Calcula el número total de empleados que hay en la tabla empleado.
+select count(id) as Total_empleados from empleado;
+
+-- Calcula el número de empleados que no tienen NULL en su segundo apellido.
+select count(id) as Total_empleados
+from empleado
+where apellido2 is not null;
+
+-- Calcula el número de empleados que hay en cada departamento. Tienes que devolver dos columnas, una con el nombre del departamento y otra con el 
+-- número de empleados que tiene asignados.
+select departamento.nombre as Departamento, count(empleado.id) as Empleados_asignados
+from departamento
+inner join empleado on departamento.id = empleado.id_departamento
+group by Departamento;
+
+-- Calcula el nombre de los departamentos que tienen más de 2 empleados. El resultado debe tener dos columnas, una con el nombre del departamento y
+-- otra con el número de empleados que tiene asignados.
+select departamento.nombre as Departamento, count(empleado.id) as Empleados_asignados
+from departamento
+inner join empleado on departamento.id = empleado.id_departamento
+group by Departamento
+having Empleados_asignados > 2;
+
+-- Calcula el número de empleados que trabajan en cada uno de los departamentos. El resultado de esta consulta también tiene que incluir
+-- aquellos departamentos que no tienen ningún empleado asociado.
+select departamento.nombre as Departamento, count(empleado.id) as Empleados_asignados
+from departamento
+left join empleado on departamento.id = empleado.id_departamento
+group by Departamento;
+
+-- Calcula el número de empleados que trabajan en cada unos de los departamentos que tienen un presupuesto mayor a 200000 euros.
+select departamento.nombre as Departamento, count(empleado.id) as Empleados_asignados
+from departamento
+inner join empleado on departamento.id = empleado.id_departamento
+where departamento.presupuesto > 200000
+group by Departamento;
