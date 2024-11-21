@@ -83,30 +83,64 @@ DELIMITER ;
 
 select TotalPedidos(5) as Total_Pedidos;
 
--- 2. Calcular la comisión total ganada por un comercial
+-- 2. Calcular la comisión total ganada por un comercial 
+drop function comisionTotal;
+DELIMITER //
+CREATE FUNCTION comisionTotal(comercial_id INT)
+RETURNS DECIMAL(10,2) DETERMINISTIC
+BEGIN
+	declare total FLOAT;
+    select sum(p.total*c.comision) into total from pedido p inner join comercial c on p.id_comercial = c.id where c.id = comercial_id;
+    return total;
+END //
+DELIMITER ;
+
+select comisionTotal(1) as Comision_Total;
 
 -- 3. Obtener el cliente con mayor total en pedidos
 DELIMITER //
-create function Total_Pedidos()
-returns INT deterministic
-begin
-	declare total_pedidos INT;
-    select count(*) into total_pedidos from pedido
-    inner join cliente on pedido.id_cliente = cliente.id
-    order by total_pedidos desc limit 1 ;
-    return total_pedidos;
-end //
+CREATE FUNCTION Cliente_Mayor_Total()
+RETURNS VARCHAR(255) DETERMINISTIC
+BEGIN
+    DECLARE cliente_info VARCHAR(255);
+    
+    SELECT CONCAT(' Nombre: ', c.nombre, ' - Total: ', SUM(p.total))
+    INTO cliente_info
+    FROM cliente c
+    JOIN pedido p ON c.id = p.id_cliente
+    GROUP BY c.nombre
+    ORDER BY SUM(p.total) DESC
+    LIMIT 1;
+    
+    RETURN cliente_info;
+END //
 DELIMITER ;
 
-select Total_Pedidos() as Cliente_PedidosMax; -- Espero que sea así :(
+select Cliente_Mayor_Total();
 
 -- 4. Contar la cantidad de pedidos realizados en un año específico
+drop function cantidad_Pedidos;
 DELIMITER //
-create function cantidad_Pedidos(fecha date)
-returns date deterministic
+create function cantidad_Pedidos(fecha year)
+returns INT deterministic
 begin
 	declare cantidad_Año INT;
-    select count(*) into cantidad_año from pedido;
+    select count(*) into cantidad_año from pedido where year(pedido.fecha) = fecha;
     return cantidad_año;
 end //
 DELIMITER ;
+
+select cantidad_Pedidos(2024);
+
+-- 5. Obtener el promedio de total de pedidos por cliente
+DELIMITER //
+create function Promedio()
+returns float deterministic
+begin
+	declare promedio float;
+    select avg(total) into promedio from (select id_cliente, sum(total) as total from pedido group by id_cliente) subquery;
+    return promedio;
+end //
+DELIMITER ;
+
+select Promedio();
